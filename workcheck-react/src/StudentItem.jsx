@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, forwardRef } from "react";
 import axios from "axios";
 import "./StudentItem.css";
 
-const StudentItem = ({ student }) => {
+const StudentItem = forwardRef(({ student }, ref) => {
   const [file, setFile] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -11,7 +11,10 @@ const StudentItem = ({ student }) => {
   };
 
   const handleSubmit = async () => {
-    if (!student.basicSubmitted && !student.advancedSubmitted) {
+    if (
+      !student.basic_assignment_submitted &&
+      !student.advanced_assignment_submitted
+    ) {
       setIsSubmitting(true);
       if (file) {
         const formData = new FormData();
@@ -20,9 +23,9 @@ const StudentItem = ({ student }) => {
         try {
           await axios.post("http://localhost:5000/api/submitFile", formData);
           if (file.name.includes("advanced")) {
-            student.advancedSubmitted = true;
+            student.advanced_assignment_submitted = true;
           } else {
-            student.basicSubmitted = true;
+            student.basic_assignment_submitted = true;
           }
           alert("提交文件成功");
         } catch (error) {
@@ -35,22 +38,31 @@ const StudentItem = ({ student }) => {
   };
 
   return (
-    <div className="student-item">
+    <div className="student-item" ref={ref}>
       <p>学生姓名：{student.name}</p>
-      <p>基础作业提交状态：{student.basicSubmitted ? "已提交" : "未提交"}</p>
-      <p>进阶作业提交状态：{student.advancedSubmitted ? "已提交" : "未提交"}</p>
-      {student.advancedScore !== null && (
-        <p>进阶作业分数：{student.advancedScore}</p>
+      <p>
+        基础作业提交状态：
+        {student.basic_assignment_submitted ? "已提交" : "未提交"}
+      </p>
+      <p>
+        进阶作业提交状态：
+        {student.advanced_assignment_submitted ? "已提交" : "未提交"}
+      </p>
+      {student.advanced_assignment_score !== null && (
+        <p>进阶作业分数：{student.advanced_assignment_score}</p>
       )}
       <input type="file" onChange={handleFileChange} />
       <button
         onClick={handleSubmit}
         disabled={
-          isSubmitting || student.basicSubmitted || student.advancedSubmitted
+          isSubmitting ||
+          student.basic_assignment_submitted ||
+          student.advanced_assignment_submitted
         }
         style={{
           backgroundColor:
-            student.basicSubmitted || student.advancedSubmitted
+            student.basic_assignment_submitted ||
+            student.advanced_assignment_submitted
               ? "#ccc"
               : "#007bff",
         }}
@@ -59,6 +71,6 @@ const StudentItem = ({ student }) => {
       </button>
     </div>
   );
-};
+});
 
 export default StudentItem;
