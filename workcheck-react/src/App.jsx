@@ -5,8 +5,9 @@ import axios from "axios";
 
 const App = () => {
   const [students, setStudents] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const studentRefs = useRef([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const studentRefs = useRef({});
 
   // 设置组件的ref
   const setRef = (student, el) => {
@@ -21,29 +22,34 @@ const App = () => {
         const response = await axios.get(
           "http://localhost:5000/api/getStudents"
         );
-        console.log(response.data); // 打印后端返回的数据
         setStudents(response.data);
+        setLoading(false);
       } catch (error) {
         console.error("获取学生数据失败", error);
+        setError("无法加载学生数据");
+        setLoading(false);
       }
     };
     fetchData();
   }, []);
 
+  // 搜索方法实现
   const handleSearch = (term) => {
-    setSearchTerm(term);
     const targetStudent = students.find(
       (student) => student.id === parseInt(term)
     );
-    // console.log("已找到学生", targetStudent);
     if (targetStudent) {
       const targetRef = studentRefs.current[targetStudent.id];
-      // console.log("已找到 ref", targetRef);
       if (targetRef) {
         targetRef.scrollIntoView({ behavior: "smooth" });
       }
+    } else {
+      alert("未找到学生");
     }
   };
+
+  if (loading) return <p>加载中...</p>;
+  if (error) return <p>{error}</p>;
 
   return (
     <div>

@@ -10,30 +10,39 @@ const StudentItem = forwardRef(({ student }, ref) => {
     setFile(e.target.files[0]);
   };
 
+  // 提交文件和学生ID
   const handleSubmit = async () => {
+    if (!file) {
+      alert("请选择一个文件");
+      return;
+    }
+
     if (
-      !student.basic_assignment_submitted &&
-      !student.advanced_assignment_submitted
+      student.basic_assignment_submitted ||
+      student.advanced_assignment_submitted
     ) {
-      setIsSubmitting(true);
-      if (file) {
-        const formData = new FormData();
-        formData.append("file", file);
-        formData.append("studentId", student.id);
-        try {
-          await axios.post("http://localhost:5000/api/submitFile", formData);
-          if (file.name.includes("advanced")) {
-            student.advanced_assignment_submitted = true;
-          } else {
-            student.basic_assignment_submitted = true;
-          }
-          alert("提交文件成功");
-        } catch (error) {
-          console.error("提交文件失败", error);
-        } finally {
-          setIsSubmitting(false);
-        }
+      alert("作业已提交");
+      return;
+    }
+
+    setIsSubmitting(true);
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("studentId", student.id);
+
+    try {
+      await axios.post("http://localhost:5000/api/submitFile", formData);
+      if (file.name.includes("advanced")) {
+        student.advanced_assignment_submitted = true;
+      } else {
+        student.basic_assignment_submitted = true;
       }
+      alert("提交文件成功");
+    } catch (error) {
+      console.error("提交文件失败", error);
+      alert("提交文件失败");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -61,6 +70,7 @@ const StudentItem = forwardRef(({ student }, ref) => {
         }
         style={{
           backgroundColor:
+            isSubmitting ||
             student.basic_assignment_submitted ||
             student.advanced_assignment_submitted
               ? "#ccc"

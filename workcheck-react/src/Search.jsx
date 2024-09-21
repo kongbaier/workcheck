@@ -9,7 +9,11 @@ const Search = ({ onSearch }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSearch(searchTerm);
+    if (searchTerm.trim()) {
+      onSearch(searchTerm);
+    } else {
+      alert("请输入有效的学生 ID");
+    }
   };
 
   return (
