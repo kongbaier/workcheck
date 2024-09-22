@@ -1,12 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
 import StudentItem from "./StudentItem";
+import { useSelector } from "react-redux";
 import Search from "./Search";
 import axios from "axios";
+import Login from "./login";
 
 const App = () => {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
   const studentRefs = useRef({});
 
   // 设置组件的ref
@@ -53,15 +56,23 @@ const App = () => {
 
   return (
     <div>
-      <Search onSearch={handleSearch} />
-      <h1>学生作业管理系统</h1>
-      {students.map((student) => (
-        <StudentItem
-          ref={(el) => setRef(student, el)}
-          key={student.id}
-          student={student}
-        />
-      ))}
+      {/* {!isLoggedIn ? <Login /> : <StudentManagement /> } */}
+
+      {!isLoggedIn ? (
+        <Login />
+      ) : (
+        <>
+          <Search onSearch={handleSearch} />
+          <h1>学生作业管理系统</h1>
+          {students.map((student) => (
+            <StudentItem
+              ref={(el) => setRef(student, el)}
+              key={student.id}
+              student={student}
+            />
+          ))}
+        </>
+      )}
     </div>
   );
 };
