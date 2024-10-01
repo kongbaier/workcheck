@@ -1,8 +1,10 @@
 import React, { useState, forwardRef } from "react";
 import axios from "axios";
 import "./StudentItem.css";
+import config from "../config.json";
 
 const StudentItem = forwardRef(({ student }, ref) => {
+  const url = config.url;
   const [file, setFile] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -31,7 +33,7 @@ const StudentItem = forwardRef(({ student }, ref) => {
     formData.append("studentId", student.id);
 
     try {
-      await axios.post("http://localhost:5000/api/submitFile", formData);
+      await axios.post(` ${url}/api/submitFile`, formData);
       if (file.name.includes("advanced")) {
         student.advanced_assignment_submitted = true;
       } else {

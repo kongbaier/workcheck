@@ -1,13 +1,12 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import config from "../../../config.json";
 
+const url = config.url;
 export const loginUser = createAsyncThunk(
   "user/loginUser",
   async (userData) => {
-    const response = await axios.post(
-      "http://localhost:5000/api/login",
-      userData
-    );
+    const response = await axios.post(`${url}/api/login`, userData);
     return response.data; // 假设后端返回用户信息和token
   }
 );

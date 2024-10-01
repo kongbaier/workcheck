@@ -4,8 +4,12 @@ import { useSelector } from "react-redux";
 import Search from "./Search";
 import axios from "axios";
 import Login from "./login";
+import { loginUser } from "./store/modules/loginStore";
+import config from "../config.json";
 
 const App = () => {
+  const url = config.url;
+  const token = useSelector((state) => state.user.userInfo?.token);
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -22,9 +26,7 @@ const App = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:5000/api/getStudents"
-        );
+        const response = await axios.get(`${url}/api/getStudents`);
         setStudents(response.data);
         setLoading(false);
       } catch (error) {

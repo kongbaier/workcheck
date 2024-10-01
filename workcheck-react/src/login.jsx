@@ -8,9 +8,23 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const { loading, error } = useSelector((state) => state.user);
 
-  const handleSubmit = (e) => {
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   dispatch(loginUser({ username, password }));
+  // };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch(loginUser({ username, password }));
+    try {
+      const response = await dispatch(loginUser({ username, password }));
+      if (response.payload && response.payload.token) {
+        localStorage.setItem("token", response.payload.token); // 存储 token
+      } else {
+        console.error("未收到有效的 token");
+      }
+    } catch (error) {
+      console.error("登录失败", error);
+    }
   };
 
   return (
