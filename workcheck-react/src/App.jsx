@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
-import StudentItem from "./StudentItem";
+import StudentItem from "./components/StudentItem/StudentItem";
 import { useSelector } from "react-redux";
 import Search from "./Search";
 import axios from "axios";
-import Login from "./login";
+import Login from "./components/login/login";
 import { loginUser } from "./store/modules/loginStore";
 import config from "../config.json";
 

@@ -1,7 +1,7 @@
 import React, { useState, forwardRef } from "react";
 import axios from "axios";
-import "./StudentItem.css";
-import config from "../config.json";
+import "./css/StudentItem.css";
+import config from "../../../config.json";
 
 const StudentItem = forwardRef(({ student }, ref) => {
   const url = config.url;
